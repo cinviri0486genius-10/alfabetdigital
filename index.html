@@ -16,20 +16,25 @@
     <div class="marcador">⭐ PUNTOS TOTALES: <span id="puntos-globales">0</span></div>
 
     <div class="mapa-misiones">
+      <!-- Misión 1: Ratón -->
       <div class="tarjeta-mision" id="card-mouse">
         <div class="icono-mision">🖱️</div>
         <div class="titulo-mision color-mouse">Misión 1</div>
         <p><b>Ataque de Clics:</b> Revienta los globos espaciales haciendo clic sobre ellos.</p>
       </div>
+
+      <!-- Misión 2: Teclado -->
       <div class="tarjeta-mision" id="card-teclado">
         <div class="icono-mision">⌨️</div>
         <div class="titulo-mision color-teclado">Misión 2</div>
         <p><b>Lluvia de Letras:</b> Destruye los bloques presionando la tecla correcta.</p>
       </div>
-      <div class="tarjeta-mision" id="card-graduacion">
-        <div class="icono-mision">🎓</div>
+
+      <!-- Reto Final: Trivia de Ciberseguridad -->
+      <div class="tarjeta-mision" id="card-trivia">
+        <div class="icono-mision">🛡️</div>
         <div class="titulo-mision color-codigo">Reto Final</div>
-        <p><b>Tu Graduación:</b> Escribe tu nombre para reclamar tu diploma digital.</p>
+        <p><b>Escudo Digital:</b> Responde las preguntas secretas y demuestra que eres un Ciber-Héroe.</p>
       </div>
     </div>
   </div>
@@ -52,6 +57,22 @@
     <canvas id="canvas-teclado"></canvas>
   </div>
 
+  <!-- PANTALLA JUEGO 3: ESCUDO DIGITAL (TRIVIA INTERACTIVA) -->
+  <div id="pantalla-trivia" class="pantalla-juego oculto" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+    <div class="barra-estado">
+      <span>🛡️ Escudo Activado: <b id="score-trivia">0</b>/3</span>
+      <button class="btn-salir" id="btn-salir-trivia">Volver al Mapa 🗺️</button>
+    </div>
+    
+    <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; max-width: 500px; border: 2px solid #ec4899; box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); margin-top: 80px;">
+      <h3 id="pregunta-texto" style="font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: #f472b6; margin-top: 0;">¿Cargando pregunta...?</h3>
+      <div id="contenedor-opciones" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+        <!-- Las opciones se generarán dinámicamente desde JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- VINCULACIÓN CON TU SCRIPT DE ANIMACIONES Y LÓGICA -->
   <script src="script.js"></script>
 </body>
 </html>
