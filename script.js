@@ -1,23 +1,52 @@
 // =========================================================================
-// SISTEMA INTEGRAL - ACADEMIA DE CIBER-HÉROES (JUEGOS MOUSE Y TECLADO)
+// PARTE 1: DEFINICIÓN DE VARIABLES GLOBALES Y CAPTURA DEL DOM
 // =========================================================================
 
-// Variables de Control de Estado Global
 let puntosTotales = 0;
 let loopActivo = null;
 
-// Elementos del DOM
+// Captura de Pantallas del Sistema
 const pMenu = document.getElementById('pantalla-menu');
 const pMouse = document.getElementById('pantalla-mouse');
 const pTeclado = document.getElementById('pantalla-teclado');
+const pTrivia = document.getElementById('pantalla-trivia');
 
+// Captura de Marcadores y Contadores
 const txtPuntosGlobales = document.getElementById('puntos-globales');
 const txtScoreMouse = document.getElementById('score-mouse');
 const txtScoreTeclado = document.getElementById('score-teclado');
+const txtScoreTrivia = document.getElementById('score-trivia');
+const txtPregunta = document.getElementById('pregunta-texto');
+const contenedorOpciones = document.getElementById('contenedor-opciones');
+
+// Función técnica para redimensionar los lienzos al tamaño exacto de la ventana
+function dimensionarLienzos() {
+  canvasM.width = window.innerWidth;
+  canvasM.height = window.innerHeight;
+  canvasT.width = window.innerWidth;
+  canvasT.height = window.innerHeight;
+}
+window.addEventListener('resize', dimensionarLienzos);
+
+// Función para sumar puntos en tiempo real
+function actualizarPuntosGlobales(puntos) {
+  puntosTotales += puntos;
+  txtPuntosGlobales.innerText = puntosTotales;
+}
+
+// Función central para regresar al mapa de misiones de forma limpia
+function salirAlMenu() {
+  cancelAnimationFrame(loopActivo);
+  pMouse.classList.add('oculto');
+  pTeclado.classList.add('oculto');
+  pTrivia.classList.add('oculto');
+  pMenu.classList.remove('oculto');
+}
 
 // =========================================================================
-// MOTOR DEL JUEGO 1: ROMPER GLOBOS (CONTROL DE RATÓN)
+// PARTE 2: LOGICA INTEGRAL DE LA MISIÓN 1 (RATÓN - ROMPER GLOBOS)
 // =========================================================================
+
 const canvasM = document.getElementById('canvas-mouse');
 const ctxM = canvasM.getContext('2d');
 let globosJuego = [];
@@ -40,12 +69,12 @@ class GloboObjetivo {
     // Hilo del globo
     ctxM.beginPath();
     ctxM.moveTo(0, this.radio);
-    ctxM.quadraticCurveTo(Math.sin(this.faseBalanceo)*5, this.radio + 15, 0, this.radio + 30);
+    ctxM.quadraticCurveTo(Math.sin(this.faseBalanceo) * 5, this.radio + 15, 0, this.radio + 30);
     ctxM.strokeStyle = 'rgba(255, 255, 255, 0.4)';
     ctxM.lineWidth = 2;
     ctxM.stroke();
 
-    // Cuerpo esférico escalado
+    // Cuerpo
     ctxM.beginPath();
     ctxM.scale(1, 1.2);
     ctxM.arc(0, 0, this.radio, 0, Math.PI * 2);
@@ -76,12 +105,12 @@ function bucleJuegoMouse() {
 }
 
 canvasM.addEventListener('mousedown', (e) => {
+  if (pMouse.classList.contains('oculto')) return;
   const rect = canvasM.getBoundingClientRect();
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
 
   globosJuego.forEach((g, idx) => {
-    // Cálculo matemático de distancia euclidiana entre clic y centro del globo
     const dx = mouseX - g.x;
     const dy = mouseY - g.y;
     const distancia = Math.sqrt(dx * dx + dy * dy);
@@ -101,8 +130,9 @@ canvasM.addEventListener('mousedown', (e) => {
 });
 
 // =========================================================================
-// MOTOR DEL JUEGO 2: LLUVIA DE LETRAS (CONTROL DE TECLADO)
+// PARTE 3: LOGICA INTEGRAL DE LA MISIÓN 2 (TECLADO - LLUVIA DE LETRAS)
 // =========================================================================
+
 const canvasT = document.getElementById('canvas-teclado');
 const ctxT = canvasT.getContext('2d');
 let letrasJuego = [];
@@ -120,11 +150,6 @@ class LetraCaida {
   }
   dibujar() {
     ctxT.save();
-    ctxT.fillStyle = this.color;
-    ctxT.font = "bold 38px 'Fredoka One', cursive";
-    ctxT.textAlign = "center";
-    
-    // Contenedor visual tipo bloque de código
     ctxT.strokeStyle = 'rgba(255,255,255,0.15)';
     ctxT.lineWidth = 2;
     ctxT.strokeRect(this.x - 25, this.y - 32, 50, 48);
@@ -132,6 +157,8 @@ class LetraCaida {
     ctxT.fillRect(this.x - 25, this.y - 32, 50, 48);
 
     ctxT.fillStyle = this.color;
+    ctxT.font = "bold 38px 'Fredoka One', cursive";
+    ctxT.textAlign = "center";
     ctxT.fillText(this.letra, this.x, this.y + 6);
     ctxT.restore();
   }
@@ -157,7 +184,6 @@ function bucleJuegoTeclado() {
 
 window.addEventListener('keydown', (e) => {
   if (pTeclado.classList.contains('oculto')) return;
-
   const teclaPresionada = e.key.toUpperCase();
   
   for (let i = 0; i < letrasJuego.length; i++) {
@@ -177,29 +203,77 @@ window.addEventListener('keydown', (e) => {
 });
 
 // =========================================================================
-// SISTEMA DE NAVEGACIÓN Y ENRUTAMIENTO ENTRE PANTALLAS
+// PARTE 4: LÓGICA DE LA MISIÓN 3 (TRIVIA FINAL) Y CONFIGURACIÓN DE CLICS
 // =========================================================================
-function dimensionarLienzos() {
-  canvasM.width = window.innerWidth;
-  canvasM.height = window.innerHeight;
-  canvasT.width = window.innerWidth;
-  canvasT.height = window.innerHeight;
-}
-window.addEventListener('resize', dimensionarLienzos);
 
-function actualizarPuntosGlobales(puntos) {
-  puntosTotales += puntos;
-  txtPuntosGlobales.innerText = puntosTotales;
+let triviaScore = 0;
+let indicePreguntaActual = 0;
+
+const preguntasTrivia = [
+  {
+    q: "Si aparece un anuncio sospechoso que dice '¡Ganaste un premio!', ¿qué debes hacer?",
+    options: ["Darle clic rápido", "Cerrar la ventana y avisar a un adulto", "Descargar el premio"],
+    correct: 1
+  },
+  {
+    q: "¿Cuál es una contraseña segura para proteger tus juegos?",
+    options: ["12345", "MiNombre123", "Una frase secreta con letras y números que solo yo sepa"],
+    correct: 2
+  },
+  {
+    q: "Si alguien que no conoces te habla por el chat de un juego, ¿qué es lo correcto?",
+    options: ["Contarle dónde vives", "No darle datos personales y decirle a tus papás o maestros", "Hacerte su mejor amigo"],
+    correct: 1
+  }
+];
+
+function iniciarTrivia() {
+  triviaScore = 0;
+  indicePreguntaActual = 0;
+  txtScoreTrivia.innerText = triviaScore;
+  mostrarPregunta();
 }
 
-function salirAlMenu() {
-  cancelAnimationFrame(loopActivo);
-  pMouse.classList.add('oculto');
-  pTeclado.classList.add('oculto');
-  pMenu.classList.remove('oculto');
+function mostrarPregunta() {
+  contenedorOpciones.innerHTML = "";
+  
+  if (indicePreguntaActual >= preguntasTrivia.length) {
+    alert("🎓 ¡RETO FINAL COMPLETADO! Has activado el Escudo Digital. ¡Estás listo para tu graduación!");
+    salirAlMenu();
+    return;
+  }
+
+  const datosPregunta = preguntasTrivia[indicePreguntaActual];
+  txtPregunta.innerText = datosPregunta.q;
+
+  datosPregunta.options.forEach((opcion, idx) => {
+    const boton = document.createElement('button');
+    boton.innerText = opcion;
+    boton.style.cssText = "background: rgba(255,255,255,0.08); color: white; border: 2px solid #475569; padding: 12px; border-radius: 12px; font-family: 'Comic Neue', sans-serif; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; text-align: left;";
+    
+    boton.onmouseover = () => { boton.style.background = "rgba(236, 72, 153, 0.2)"; boton.style.borderColor = "#ec4899"; };
+    boton.onmouseout = () => { boton.style.background = "rgba(255,255,255,0.08)"; boton.style.borderColor = "#475569"; };
+    
+    boton.onclick = () => verificarRespuesta(idx);
+    contenedorOpciones.appendChild(boton);
+  });
 }
 
-// Disparadores de arranque de Misiones
+function verificarRespuesta(indiceSeleccionado) {
+  const datosPregunta = preguntasTrivia[indicePreguntaActual];
+  if (indiceSeleccionado === datosPregunta.correct) {
+    alert("🌟 ¡Correcto! ¡Buen trabajo!");
+    triviaScore++;
+    txtScoreTrivia.innerText = triviaScore;
+    actualizarPuntosGlobales(20);
+  } else {
+    alert("❌ ¡Oh! Esa opción no es muy segura. ¡Inténtalo de nuevo!");
+  }
+  indicePreguntaActual++;
+  mostrarPregunta();
+}
+
+// PROGRAMACIÓN DE LOS EVENTOS CLIC EN LAS TARJETAS DEL MAPA
 document.getElementById('card-mouse').addEventListener('click', () => {
   pMenu.classList.add('oculto');
   pMouse.classList.remove('oculto');
@@ -220,11 +294,13 @@ document.getElementById('card-teclado').addEventListener('click', () => {
   bucleJuegoTeclado();
 });
 
-document.getElementById('card-graduacion').addEventListener('click', () => {
-  alert("🎓 ¡Misión Final Desbloqueada! Accediendo a tu pasarela de graduación...");
-  // Enrutamiento directo: Aquí puedes redirigir a las páginas de diplomas hechas previamente.
+document.getElementById('card-trivia').addEventListener('click', () => {
+  pMenu.classList.add('oculto');
+  pTrivia.classList.remove('oculto');
+  iniciarTrivia();
 });
 
-// Listeners para botones de retroceso
+// PROGRAMACIÓN DE LOS BOTONES PARA VOLVER AL MAPA
 document.getElementById('btn-salir-mouse').addEventListener('click', salirAlMenu);
 document.getElementById('btn-salir-teclado').addEventListener('click', salirAlMenu);
+document.getElementById('btn-salir-trivia').addEventListener('click', salirAlMenu);
