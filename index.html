@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 ¡Academia de Ciber-Héroes! 🎮</title>
+  <link href="https://googleapis.com" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- PANTALLA PRINCIPAL: MAPA DE MISIONES -->
+  <div id="pantalla-menu">
+    <h1>ACADEMIA DE CIBER-HÉROES</h1>
+    <p class="subtitulo">¡Cumple las misiones, domina la computadora y conviértete en un experto!</p>
+    <div class="marcador">⭐ PUNTOS TOTALES: <span id="puntos-globales">0</span></div>
+
+    <div class="mapa-misiones">
+      <div class="tarjeta-mision" id="card-mouse">
+        <div class="icono-mision">🖱️</div>
+        <div class="titulo-mision color-mouse">Misión 1</div>
+        <p><b>Ataque de Clics:</b> Revienta los globos espaciales haciendo clic sobre ellos.</p>
+      </div>
+      <div class="tarjeta-mision" id="card-teclado">
+        <div class="icono-mision">⌨️</div>
+        <div class="titulo-mision color-teclado">Misión 2</div>
+        <p><b>Lluvia de Letras:</b> Destruye los bloques presionando la tecla correcta.</p>
+      </div>
+      <div class="tarjeta-mision" id="card-graduacion">
+        <div class="icono-mision">🎓</div>
+        <div class="titulo-mision color-codigo">Reto Final</div>
+        <p><b>Tu Graduación:</b> Escribe tu nombre para reclamar tu diploma digital.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA JUEGO 1: ROMPER GLOBOS (MOUSE) -->
+  <div id="pantalla-mouse" class="pantalla-juego oculto">
+    <div class="barra-estado">
+      <span>🎈 Globos Explotados: <b id="score-mouse">0</b>/10</span>
+      <button class="btn-salir" id="btn-salir-mouse">Volver al Mapa 🗺️</button>
+    </div>
+    <canvas id="canvas-mouse"></canvas>
+  </div>
+
+  <!-- PANTALLA JUEGO 2: LLUVIA DE LETRAS (TECLADO) -->
+  <div id="pantalla-teclado" class="pantalla-juego oculto">
+    <div class="barra-estado">
+      <span>⌨️ Letras Atrapadas: <b id="score-teclado">0</b>/10</span>
+      <button class="btn-salir" id="btn-salir-teclado">Volver al Mapa 🗺️</button>
+    </div>
+    <canvas id="canvas-teclado"></canvas>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
